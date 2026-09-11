@@ -1,10 +1,11 @@
-package dev.gaspar.mapping;
+package dev.gaspar.miniorm.mapping;
 
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.lang.reflect.Field;
+import dev.gaspar.miniorm.annotation.*;
 
 public class EntityMapper {
 
