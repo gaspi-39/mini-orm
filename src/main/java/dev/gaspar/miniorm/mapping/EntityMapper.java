@@ -61,4 +61,10 @@ public class EntityMapper {
     return result;
   }
 
+  public String buildSelectById(Object e) {
+    String table = e.getClass().getAnnotation(Table.class).value();
+    String result = "SELECT * FROM " + table + " WHERE id = ?";
+    return result;
+  }
+
 }
