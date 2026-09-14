@@ -61,9 +61,23 @@ public class EntityMapper {
     return result;
   }
 
-  public String buildSelectById(Object e) {
-    String table = e.getClass().getAnnotation(Table.class).value();
-    String result = "SELECT * FROM " + table + " WHERE id = ?";
+  private String findIdField(Class<?> clazz) {
+
+    Map<String, String> fieldColumn = this.fieldColumn(clazz);
+    for (Field field : clazz.getDeclaredFields()) {
+      if (field.isAnnotationPresent(Id.class)) {
+        return fieldColumn.get(field.getName());
+      }
+    }
+
+    throw new IllegalArgumentException(
+        "Entity " + clazz.getName() + " must have a field annotated with @Id");
+  }
+
+  public String buildSelectById(Class<?> clazz) {
+    String table = clazz.getAnnotation(Table.class).value();
+    String idColumnName = this.findIdField(clazz);
+    String result = "SELECT * FROM " + table + " WHERE " + idColumnName + " = ?";
     return result;
   }
 
