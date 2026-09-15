@@ -81,4 +81,21 @@ public class EntityMapper {
     return result;
   }
 
+  public String buildUpdate(Class<?> clazz) {
+    String table = clazz.getAnnotation(Table.class).value();
+    Map<String, String> fieldToColumn = this.fieldColumn(clazz);
+    String idColumnName = this.findIdField(clazz);
+
+    List<String> set = new ArrayList<>();
+    String where = " WHERE " + idColumnName + " = ?";
+    for (Field field : clazz.getDeclaredFields()) {
+      if (!field.isAnnotationPresent(Id.class)) {
+        set.add(fieldToColumn.get(field.getName()) + " = ?");
+      }
+    }
+
+    String result = "UPDATE " + table + " SET " + String.join(", ", set) + where;
+    return result;
+  }
+
 }
