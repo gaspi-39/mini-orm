@@ -5,9 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
 import dev.gaspar.miniorm.annotation.*;
 
 public class EntityMapper {
+
+  public <T> T mapRow(ResultSet rs, Class<T> clazz) throws Exception {
+    Map<String, String> fieldToColumn = this.fieldColumn(clazz);
+    T instance = this.createInstance(clazz);
+
+    for (Field field : clazz.getDeclaredFields()) {
+      Object value = rs.getObject(fieldToColumn.get(field.getName()));
+      field.setAccessible(true);
+      if (value != null) {
+        field.set(instance, value);
+      }
+    }
+    return instance;
+  }
 
   private Map<String, String> fieldColumn(Class<?> clazz) {
     Map<String, String> map = new HashMap<>();
