@@ -39,21 +39,6 @@ public class EntityMapper {
     return map;
   }
 
-  public <T> T populateFromTable(Class<T> clazz, Map<String, Object> values) throws Exception {
-    Map<String, String> map = this.fieldColumn(clazz);
-    T instance = this.createInstance(clazz);
-
-    for (Field field : clazz.getDeclaredFields()) {
-      field.setAccessible(true);
-      String column = map.get(field.getName());
-      if (values.containsKey(column)) {
-        field.set(instance, values.get(column));
-      }
-    }
-
-    return instance;
-  }
-
   public <T> T createInstance(Class<T> clazz) throws Exception {
     return clazz.getDeclaredConstructor().newInstance();
   }
