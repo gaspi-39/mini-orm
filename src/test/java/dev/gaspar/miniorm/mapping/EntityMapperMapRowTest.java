@@ -24,7 +24,6 @@ class EntityMapperMapRowTest {
         Statement stmt = conn.createStatement()) {
 
       stmt.execute("CREATE TABLE clientes (id BIGINT PRIMARY KEY, razon_social VARCHAR(255))");
-
       try (PreparedStatement insert = conn
           .prepareStatement("INSERT INTO clientes (id, razon_social) VALUES (?, ?)")) {
         insert.setLong(1, 1L);
