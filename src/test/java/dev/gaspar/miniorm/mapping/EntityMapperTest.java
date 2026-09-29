@@ -14,9 +14,18 @@ class EntityMapperTest {
   void buildInsertGeneratesSqlWithPlaceholders() {
     EntityMapper mapper = new EntityMapper();
 
-    String sql = mapper.buildInsert(new Cliente());
+    String sql = mapper.buildInsert(Cliente.class);
 
     assertEquals("INSERT INTO clientes (id, razon_social) VALUES (?, ?)", sql);
+  }
+
+  @Test
+  void buildSelectByIdUsesRenamedIdColumn() {
+    EntityMapper mapper = new EntityMapper();
+
+    String sql = mapper.buildSelectById(Factura.class);
+
+    assertEquals("SELECT * FROM facturas WHERE factura_id = ?", sql);
   }
 
   @Test
