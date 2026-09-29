@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import dev.gaspar.miniorm.annotation.*;
 
 public class EntityMapper {
 
-  public <T> T mapRow(ResultSet rs, Class<T> clazz) throws Exception {
+  public <T> T mapRow(ResultSet rs, Class<T> clazz) throws SQLException, ReflectiveOperationException {
     Map<String, String> fieldToColumn = this.fieldColumn(clazz);
     T instance = this.createInstance(clazz);
 

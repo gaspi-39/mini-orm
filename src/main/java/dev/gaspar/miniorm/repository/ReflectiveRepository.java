@@ -3,13 +3,12 @@ package dev.gaspar.miniorm.repository;
 import dev.gaspar.miniorm.connection.ConnectionFactory;
 import dev.gaspar.miniorm.mapping.EntityMapper;
 
-import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ReflectiveRepository<T> implements Repository<T, Long> {
+public class ReflectiveRepository<T, ID> implements Repository<T, ID> {
   private final Class<T> entityClass;
   private final EntityMapper mapper;
   private final ConnectionFactory factory;
