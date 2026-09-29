@@ -42,12 +42,22 @@ public class EntityMapper {
     return map;
   }
 
-  public <T> T createInstance(Class<T> clazz) throws Exception {
+  public <T> T createInstance(Class<T> clazz) throws ReflectiveOperationException {
     return clazz.getDeclaredConstructor().newInstance();
   }
 
-  public String buildInsert(Object e) {
-    Class<?> clazz = e.getClass();
+
+  public void bind(PreparedStatement statement, Object entity)
+    throws SQLException, ReflectiveOperationException {
+    int i = 1;
+    for (Field field : entity.getClass().getDeclaredFields()) {
+      field.setAccessible(true);
+      statement.setObject(i, field.get(entity));
+      i++;      
+    }
+  }
+
+  public String buildInsert(Class<?> clazz) {
     String table = clazz.getAnnotation(Table.class).value();
     Map<String, String> fieldToColumn = this.fieldColumn(clazz);
 

@@ -18,21 +18,47 @@ public class ReflectiveRepository<T, ID> implements Repository<T, ID> {
     this.mapper = mapper;
     this.factory = factory;
   }
-  
-  public T findById(Long id) {
-   String sql = mapper.buildSelectById(this.entityCLass);
-   try (Connection conn = factory.getConnection();
-       PreparedStatement select = conn.prepareStatement(sql)) {
-     select.setLong(id);
-     ResultSet rs = select.executeQuery();
 
-     if(rs.next()) {
-       T instance = mapper.mapRow(rs, this.entityClass);
-       return instance;
-     } else {
-       return null;    
-       }
-       }
+  public T findById(ID id) {
+    try {
+      String sql = this.mapper.buildSelectById(this.entityClass);
+      try (Connection conn = this.factory.getConnection();
+          PreparedStatement select = conn.prepareStatement(sql)) {
+        select.setObject(1, id);
+        ResultSet rs = select.executeQuery();
+
+        if(rs.next()) {
+          T instance = this.mapper.mapRow(rs, this.entityClass);
+          return instance;
+        } else {
+          return null;    
+        }
+          }
+    } catch (SQLException | ReflectiveOperationException exception) {
+
+      throw new RuntimeException(
+          "Didn´t find the entity "
+          + this.entityClass.getSimpleName()
+          + " with id "
+          + id,
+          exception
+          );
+    }
   }
+
+  public void save(T entity) {
+    try {
+      String sql = this.mapper.buildInsert(entity.getClass());
+      try (Connection conn = this.factory.getConnection();
+          PreparedStatement insert = conn.prepareStatement(sql)) {
+        this.mapper.bind(insert, entity);
+        insert.executeUpdate();
+          }
+    } catch (SQLException | ReflectiveOperationException exception) { 
+      throw new RuntimeException("Can´t insert the entity " + this.entityClass.getSimpleName(), exception);
+    }
+  }
+
+    
 }
 
